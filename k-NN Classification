@@ -1,0 +1,48 @@
+import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
+
+# 1. Training Dataset (from your numerical example)
+# Features: Maths Marks (A1), Science Marks (A2)
+# Labels: Pass (1), Fail (0)
+data = np.array([
+    [7, 7],  # O1: Pass
+    [7, 4],  # O2: Pass
+    [3, 4],  # O3: Fail
+    [1, 4],  # O4: Fail
+    [2, 6]   # O5: Fail
+])
+
+# True labels
+labels = np.array([1, 1, 0, 0, 0])
+
+# 2. New Object to Classify
+new_object = np.array([[3, 7]])
+
+# 3. Initialize and Train the k-NN Model (k=3)
+k = 3
+knn = KNeighborsClassifier(n_neighbors=k, metric='euclidean')
+knn.fit(data, labels)
+
+# 4. Predict the Class
+prediction = knn.predict(new_object)
+
+# 5. Output the Result
+predicted_class = "Pass" if prediction[0] == 1 else "Fail"
+
+print(f"New Object: Maths=3, Science=7")
+print(f"Predicted Class (k={k}): {predicted_class}")
+
+# --- Optional: Display Distances/Neighbors (for full analysis) ---
+# Calculate the distances (Manually for demonstration clarity, or use neighbors.kneighbors)
+distances, indices = knn.kneighbors(new_object)
+
+print("\n--- 3-Nearest Neighbors Analysis ---")
+for i in range(k):
+    neighbor_index = indices[0][i]
+    distance = distances[0][i]
+    neighbor_data = data[neighbor_index]
+    neighbor_label = "Pass" if labels[neighbor_index] == 1 else "Fail"
+    
+    print(f"Neighbor {i+1}: {neighbor_data} | Distance: {distance:.2f} | Class: {neighbor_label}")
+
+# The result aligns with the manual calculation: The majority (3/3) are 'Fail'.
